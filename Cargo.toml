@@ -7,3 +7,11 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+anyhow = "1.0.34"
+async-std = { version = "*", features = ["tokio02"] }
+tokio = { version = "0.2", features = ["macros"] }
+tide = "0.15.0"
+reqwest = {version ="0.10.9", features = ["json"] }
+
+serde = { version = "1", features = ["derive"] }
+json = { package = "serde_json", version = "1" }
