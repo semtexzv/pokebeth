@@ -1,25 +1,32 @@
+use serde::{Serialize, Deserialize};
 use anyhow::*;
 use tide::Request;
 
-#[derive(Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct PokemonFlavorEntry {
     #[serde(rename = "flavor_text")]
     text: String
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct PokemonInfo {
     #[serde(rename = "flavor_text_entries")]
     flavor: Vec<PokemonFlavorEntry>
 }
 
-async fn pokeapi_get(name: &str) -> Result<json::Value> {
+async fn pokeapi_get(name: &str) -> Result<PokemonInfo> {
     let res = reqwest::get(&format!("https://pokeapi.co/api/v2/pokemon-species/{}/", name)).await?;
     Ok(res.json().await?)
 }
 
+async fn shakespearify(txt: &str) -> Result<String> {
+    
+}
+
 async fn handle_get(mut req: Request<()>) -> tide::Result {
-    let data = pokeapi_get(req.param("name")?).await?;
+    let mut data = pokeapi_get(req.param("name")?).await?;
+    let flavor = data.flavor.remove(0);
+    panic!("Flavor {:?}", flavor.text);
     Ok(tide::Response::new(tide::http::StatusCode::Ok))
 }
 
