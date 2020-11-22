@@ -38,3 +38,10 @@ pub async fn describe(name: &str) -> Result<String> {
 
     Ok(flavor)
 }
+
+#[tokio::test]
+async fn test_api() {
+    assert!(describe("charizard").await.is_ok());
+    assert!(describe("pikachu").await.is_ok());
+    assert!(describe("macbeth").await.is_err());
+}

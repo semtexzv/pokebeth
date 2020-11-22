@@ -7,6 +7,7 @@ mod shakespeare;
 async fn handle_get(req: Request<()>) -> tide::Result {
     let name = req.param("name")?;
 
+    // Get original description
     let description = pokeapi::describe(&name).await?;
 
     // Perform the translation
