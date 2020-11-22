@@ -16,4 +16,4 @@ Probably too many due to 2 different async runtimes.
 [serde](https://crates.io/crates/serde) - De/Serializiation
  
 ### Requirements
-Rust + Cargo installed on the computer. If needed, follw instructions [here](https://www.rust-lang.org/)
+Rust + Cargo installed. If needed, follow instructions [here](https://www.rust-lang.org/)
