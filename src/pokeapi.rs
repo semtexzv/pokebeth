@@ -21,7 +21,8 @@ pub struct PokemonInfo {
 }
 
 pub async fn describe(name: &str) -> Result<String> {
-    let res = reqwest::get(&format!("https://pokeapi.co/api/v2/pokemon-species/{}/", name)).await?;
+    let url = format!("https://pokeapi.co/api/v2/pokemon-species/{}/", name);
+    let res = reqwest::get(&url).await?;
     let data: PokemonInfo = res.json().await?;
 
     let entries = data.flavor

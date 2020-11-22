@@ -12,9 +12,9 @@ pub struct ShakespeareReply {
 }
 
 pub async fn translate(txt: &str) -> Result<String> {
-    let url = format!("https://api.funtranslations.com/translate/shakespeare.json");
+    let url = "https://api.funtranslations.com/translate/shakespeare.json";
     let cl = reqwest::Client::new();
-    let res = cl.post(&url)
+    let res = cl.post(url)
         .form(&[("text", txt)][..])
         .send().await?;
 
