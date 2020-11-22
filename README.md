@@ -4,9 +4,16 @@ Returns shakespearean description of a pokemon. Usage:
 2. Call the api by running `./translate.sh <optional name>`
 
 
-### Style 
-We're using tide for providing the API, and reqwest for calling remote APIs.
-Probably 2 of the most simple crates in this area. Using anyhow for error management, 
+### Dependencies
+Probably too many due to 2 different async runtimes.
 
+[tide](https://crates.io/crates/tide) - Webserver
+
+[reqwest](https://crates.io/crates/reqwest) - Client
+
+[anyhow](https://crates.io/crates/anyhow) - Error management
+
+[serde](https://crates.io/crates/serde) - De/Serializiation
+ 
 ### Requirements
 Rust + Cargo installed on the computer. If needed, follw instructions [here](https://www.rust-lang.org/)
