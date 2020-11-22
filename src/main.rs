@@ -1,40 +1,18 @@
-mod pokeapi;
-
-use serde::{Serialize, Deserialize};
 use anyhow::*;
-use tide::Request;
-use rand::prelude::SliceRandom;
+use tide::{Request, Response};
 
+mod pokeapi;
+mod shakespeare;
 
-#[derive(Debug, Deserialize, Serialize)]
-pub struct ShakespeareContents {
-    translated: String
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-pub struct ShakespeareReply {
-    contents: ShakespeareContents
-}
-
-async fn shakespearify(txt: &str) -> Result<String> {
-    let url = format!("https://api.funtranslations.com/translate/shakespeare.json");
-    let cl = reqwest::Client::new();
-    let res = cl.post(&url)
-        .form(&[("text", txt)][..])
-        .send().await?;
-
-    Ok(res.json::<ShakespeareReply>().await?.contents.translated)
-}
-
-async fn handle_get(mut req: Request<()>) -> tide::Result {
+async fn handle_get(req: Request<()>) -> tide::Result {
     let name = req.param("name")?;
 
     let description = pokeapi::describe(&name).await?;
-    
-    // Perform the translation
-    let description = shakespearify(&description).await?;
 
-    Ok(tide::Response::builder(tide::http::StatusCode::Ok)
+    // Perform the translation
+    let description = shakespeare::translate(&description).await?;
+
+    Ok(Response::builder(tide::http::StatusCode::Ok)
         .body(json::json!({
             "name": name,
             "description": description
