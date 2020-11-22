@@ -1,11 +1,18 @@
 use serde::{Serialize, Deserialize};
 use anyhow::*;
 use tide::Request;
+use rand::prelude::SliceRandom;
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct LanguageSpec {
+    name: String
+}
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct PokemonFlavorEntry {
+    language: LanguageSpec,
     #[serde(rename = "flavor_text")]
-    text: String
+    text: String,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -40,12 +47,27 @@ async fn shakespearify(txt: &str) -> Result<String> {
 }
 
 async fn handle_get(mut req: Request<()>) -> tide::Result {
-    let mut data = pokeapi_get(req.param("name")?).await?;
-    let flavor = data.flavor.remove(0);
-    let text = shakespearify(&flavor.text).await?;
+    let name = req.param("name")?;
+    let data = pokeapi_get(&name).await?;
+    let entries = data.flavor
+        .into_iter()
+        .filter(|e| e.language.name == "en")
+        .collect::<Vec<_>>();
 
-    panic!("Flavor {:?}", text);
-    Ok(tide::Response::new(tide::http::StatusCode::Ok))
+    let flavor = entries.choose(&mut rand::thread_rng())
+        .ok_or_else(|| Error::msg("Missing flavor text entries"))?;
+
+    let text = flavor.text.replace("\\n", "\n");
+    let description = shakespearify(&text).await?;
+
+    panic!("Flavor {:?}", description);
+    Ok(tide::Response::builder(tide::http::StatusCode::Ok)
+        .body(json::json!({
+            "name": name,
+            "description": description
+        }))
+        .build()
+    )
 }
 
 
